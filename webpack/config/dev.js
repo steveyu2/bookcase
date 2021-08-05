@@ -14,15 +14,35 @@ module.exports = {
   },
   output: {
     path: appPaths.appBuild,
-    filename: '[name].[contenthash:8].js',
-    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    publicPath: '/',
+    filename: 'js/[name].js',
+    chunkFilename: 'js/[name].chunk.js',
   },
   devServer: {
-    contentBase: appPaths.appPublic,
+    contentBase: appPaths.appBuild,
     compress: true,
     port: 3434,
+    hot: true,
+    historyApiFallback: {
+      // 多个页面的配置
+      // rewrites: [
+      //   { from: /./, to: appPaths.appHtml },
+      //   { from: /^\/book/, to: appPaths.appBookHtml },
+      // ],
+    },
   },
   optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          // 抽离第三方插件
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+        },
+      },
+    },
     minimizer: [
       new UglifyJsPlugin({
         cache: true,
@@ -38,8 +58,16 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: true,
-      template: [appPaths.appHtml, appPaths.appBookHtml],
+      template: appPaths.appHtml,
+      filename: 'index.html',
+      hash: true,
+      chunks: ['index'],
+    }),
+    new HtmlWebpackPlugin({
+      template: appPaths.appBookHtml,
+      filename: 'book.html',
+      hash: true,
+      chunks: ['book'],
     }),
     new MiniCssExtractPlugin({
       ignoreOrder: true,
@@ -51,7 +79,11 @@ module.exports = {
     rules: [...getLoader()],
   },
   resolve: {
-    alias: { '@app': appPaths.appSrc },
+    alias: {
+      '@app': appPaths.appSrc,
+      '@pages': appPaths.appSrc + '/pages',
+      '@components': appPaths.appSrc + '/components',
+    },
     extensions: ['.js', '.jsx'],
   },
 };

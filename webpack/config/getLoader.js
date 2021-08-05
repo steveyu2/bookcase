@@ -51,6 +51,8 @@ module.exports = function() {
         },
         'sass-loader',
       ],
+      // {test:/\.(svg|jpg|jpeg|gif|woff|woff2|eot|ttf|otf)$/,use:[{loader:'file-loader',options: {outputPath: 'assets/'}}]},//图片和字体加载
+      //     {test: /\.png$/, use: {loader:"url-loader",options:{mimetype:"image/png",limit:"4096"}}},//如果有png格式的图片，超过4M直接转化为base64格式
     },
   ];
 };

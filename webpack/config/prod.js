@@ -1,30 +1,39 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCss = require('optimize-css-assets-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 const appPaths = require('../paths');
+const appEnv = require('../env');
 const getLoader = require('./getLoader');
 
 module.exports = {
+  devtool: 'none', // source-map none
   mode: 'production',
   entry: {
     index: appPaths.appIndexJs,
     book: appPaths.appBookJs,
-    vendors: ['react'],
+    // vendors: ['react', 'react-dom',],
   },
   output: {
     path: appPaths.appBuild,
-    filename: '[name].[contenthash:8].js',
-    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    publicPath: '/',
+    filename: 'js/[name].[contenthash:8].js',
+    chunkFilename: 'js/[name].[contenthash:8].chunk.js',
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: 20,
-      maxAsyncRequests: 20,
-      minSize: 40,
+      cacheGroups: {
+        vendor: {
+          // 抽离第三方插件
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+        },
+      },
     },
     minimizer: [
       // 压缩css
@@ -42,24 +51,42 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: appPaths.appHtml,
-      chunks: ['index', 'vendors'],
+      template: appPaths.appHtml,
+      filename: 'index.html',
+      hash: true,
+      chunks: ['index', 'vendor'],
     }),
     new HtmlWebpackPlugin({
-      filename: appPaths.appBookHtml,
-      chunks: ['book', 'vendors'],
+      template: appPaths.appBookHtml,
+      filename: 'book.html',
+      hash: true,
+      chunks: ['book', 'vendor'],
     }),
     new MiniCssExtractPlugin({
       ignoreOrder: true,
-      filename: 'static/css/[name].[contenthash:8].css',
-      chunkFilename: 'static/css/[name].[contenthash:8].css',
+      filename: 'css/[name].[contenthash:8].css',
+      chunkFilename: 'css/[name].[contenthash:8].css',
     }),
+    new CopyPlugin(
+      [
+        {
+          from: appPaths.appPublic,
+          to: appPaths.appBuild,
+        },
+      ],
+      new webpack.DefinePlugin(appEnv)
+    ),
   ],
   module: {
     rules: [...getLoader()],
   },
   resolve: {
-    alias: { '@app': appPaths.appSrc },
+    alias: {
+      '@app': appPaths.appSrc,
+      '@pages': appPaths.appSrc + '/pages',
+      '@components': appPaths.appSrc + '/components',
+    },
     extensions: ['.js', '.jsx'],
   },
+  stats: { children: false },
 };
