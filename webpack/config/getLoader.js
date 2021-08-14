@@ -1,12 +1,38 @@
 const path = require('path');
 const loaderUtils = require('loader-utils');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const postcssNormalize = require('postcss-normalize');
 
-module.exports = function() {
+const getStyleLoaders = (options, more) => {
+  return [
+    'style-loader',
+    {
+      loader: 'css-loader',
+      options: options,
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        ident: 'postcss',
+        plugins: () => [
+          require('postcss-flexbugs-fixes'),
+          require('postcss-preset-env')({
+            autoprefixer: {
+              flexbox: 'no-2009',
+            },
+            stage: 3,
+          }),
+          postcssNormalize(),
+        ],
+      },
+    },
+    ...(more || []),
+  ];
+};
+module.exports = function () {
   return [
     {
       test: /\.jsx?$/,
-      exclude: /(node_modules|bower_components)/,
+      exclude: /(node_modules)/,
       use: {
         loader: 'babel-loader',
         options: {
@@ -15,42 +41,39 @@ module.exports = function() {
       },
     },
     {
+      test: /\.(png|jpe?g|gif|svg)$/i,
+      type: 'asset/resource',
+    },
+    // {
+    //   test: /\.(scss|css)$/,
+    //   include: [path.resolve(__dirname, 'not_exist_path')],
+    //   use: getStyleLoaders({}),
+    // },
+    {
       test: /\.(scss|css)$/,
-      use: [
-        'style-loader',
-        MiniCssExtractPlugin.loader,
+      // test: /\.module\.(scss|sass)$/,
+      use: getStyleLoaders(
         {
-          loader: 'css-loader',
-          options: {
-            modules: {
-              getLocalIdent: (context, localIdentName, localName, options) => {
-                const hash = loaderUtils.getHashDigest(
-                  path.posix.relative(context.rootContext, context.resourcePath) + localName,
-                  'md5',
-                  'base64',
-                  5
-                );
-                const className = loaderUtils.interpolateName(context, hash, options);
-                return [localName, className.replace(/\-|\_/g, '')].join('_');
-              },
+          modules: {
+            getLocalIdent: (context, localIdentName, localName, options) => {
+              const hash = loaderUtils.getHashDigest(
+                path.posix.relative(context.rootContext, context.resourcePath) + localName,
+                'md5',
+                'base64',
+                5
+              );
+              const className = loaderUtils.interpolateName(context, hash, options);
+              return [localName, className.replace(/\-|\_/g, '')].join('_');
             },
           },
+          sourceMap: true,
         },
-        {
-          loader: require.resolve('postcss-loader'),
-          options: {
-            plugins: () => [
-              require('postcss-preset-env')({
-                autoprefixer: {
-                  flexbox: 'no-2009',
-                },
-                stage: 3,
-              }),
-            ],
+        [
+          {
+            loader: 'sass-loader',
           },
-        },
-        'sass-loader',
-      ],
+        ]
+      ),
     },
   ];
 };

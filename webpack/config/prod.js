@@ -1,14 +1,16 @@
-const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCss = require('optimize-css-assets-webpack-plugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 
 const appPaths = require('../paths');
 const getLoader = require('./getLoader');
 
 module.exports = {
   mode: 'production',
+  devtool: 'source-map',
   entry: {
     index: appPaths.appIndexJs,
     book: appPaths.appBookJs,
@@ -18,6 +20,7 @@ module.exports = {
     path: appPaths.appBuild,
     filename: '[name].[contenthash:8].js',
     chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    publicPath: '/',
   },
   optimization: {
     splitChunks: {
@@ -42,24 +45,35 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: appPaths.appHtml,
+      inject: true,
+      template: appPaths.appHtml,
       chunks: ['index', 'vendors'],
+      filename: 'index.html',
     }),
     new HtmlWebpackPlugin({
-      filename: appPaths.appBookHtml,
+      inject: true,
+      template: appPaths.appBookHtml,
       chunks: ['book', 'vendors'],
+      filename: 'book.html',
     }),
     new MiniCssExtractPlugin({
       ignoreOrder: true,
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].css',
     }),
+    new InterpolateHtmlPlugin(HtmlWebpackPlugin, appEnv.origin),
+    new webpack.DefinePlugin(appEnv.format),
   ],
   module: {
     rules: [...getLoader()],
   },
   resolve: {
-    alias: { '@app': appPaths.appSrc },
+    alias: {
+      '@app': appPaths.appSrc,
+      '@pages': appPaths.appSrc + '/pages',
+      '@components': appPaths.appSrc + '/components',
+      '@common': appPaths.appSrc + '/common',
+    },
     extensions: ['.js', '.jsx'],
   },
 };

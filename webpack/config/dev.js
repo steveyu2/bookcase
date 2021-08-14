@@ -1,8 +1,10 @@
-const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 
+const appEnv = require('../env');
 const appPaths = require('../paths');
 const getLoader = require('./getLoader');
 
@@ -10,17 +12,27 @@ module.exports = {
   mode: 'development',
   devtool: 'source-map',
   entry: {
-    index: [appPaths.appIndexJs, appPaths.appBookJs],
+    index: appPaths.appIndexJs,
+    book: appPaths.appBookJs,
+    vendors: ['react'],
   },
   output: {
-    path: appPaths.appBuild,
-    filename: '[name].[contenthash:8].js',
-    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    filename: '[name].js',
+    chunkFilename: 'static/js/[name].chunk.js',
+    publicPath: '/',
   },
   devServer: {
-    contentBase: appPaths.appPublic,
-    compress: true,
     port: 3434,
+    writeToDisk: false,
+    contentBase: appPaths.appPublic,
+    watchContentBase: true,
+    historyApiFallback: {
+      disableDotRule: true,
+      rewrites: [{ from: /^\/book/, to: '/book.html' }],
+    },
+    // proxy: {
+    //   '/api': 'http://localhost:3000',
+    // },
   },
   optimization: {
     minimizer: [
@@ -39,19 +51,36 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
-      template: [appPaths.appHtml, appPaths.appBookHtml],
+      template: appPaths.appHtml,
+      chunks: ['index', 'vendors'],
+      filename: 'index.html',
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: appPaths.appBookHtml,
+      chunks: ['book', 'vendors'],
+      filename: 'book.html',
     }),
     new MiniCssExtractPlugin({
       ignoreOrder: true,
-      filename: 'static/css/[name].[contenthash:8].css',
-      chunkFilename: 'static/css/[name].[contenthash:8].css',
+      filename: 'static/css/[name].css',
+      chunkFilename: 'static/css/[name].css',
     }),
+    new InterpolateHtmlPlugin(HtmlWebpackPlugin, appEnv.origin),
+    new webpack.DefinePlugin(appEnv.format),
   ],
   module: {
     rules: [...getLoader()],
   },
   resolve: {
-    alias: { '@app': appPaths.appSrc },
+    alias: {
+      '@app': appPaths.appSrc,
+      '@pages': appPaths.appSrc + '/pages',
+      '@components': appPaths.appSrc + '/components',
+      '@common': appPaths.appSrc + '/common',
+      '@style': appPaths.appSrc + '/style',
+    },
     extensions: ['.js', '.jsx'],
   },
+  stats: { children: true },
 };
