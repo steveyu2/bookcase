@@ -5,12 +5,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCss = require('optimize-css-assets-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 
+const appEnv = require('../env');
 const appPaths = require('../paths');
 const getLoader = require('./getLoader');
 
 module.exports = {
   mode: 'production',
-  devtool: 'source-map',
+  // devtool: 'source-map',
   entry: {
     index: appPaths.appIndexJs,
     book: appPaths.appBookJs,

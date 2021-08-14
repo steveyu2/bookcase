@@ -1,0 +1,65 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "vsicons.dontShowNewVersionMessage": true,
+  "tabnine.experimentalAutoImports": true,
+  "editor.formatOnSave": true,
+  "powermode.enabled": true,
+  "powermode.enableShake": false,
+  "powermode.presets": "flames",
+  "codesnap.showWindowControls": false,
+  "todo-tree.tree.showScanModeButton": false,
+  "git.enableSmartCommit": true,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "explorer.confirmDragAndDrop": false,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.minimap.maxColumn": 80
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript"
+  },
+  "emmet.includeLanguages": {
+    "wxml": "html"
+  },
+  "minapp-vscode.disableAutoConfig": true,
+  "workbench.editor.enablePreview": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "editor.tabSize": 2,
+  "prettier": {
+    "printWidth": 200,
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
+  },
+  "prettier.printWidth": 100,
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.fontLigatures": null,
+  "explorer.compactFolders": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+}
