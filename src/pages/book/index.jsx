@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Link from '@components/Link';
 
-import styles from './style.module.scss';
+import styles from './style.module';
 
 const Book = () => {
   return (

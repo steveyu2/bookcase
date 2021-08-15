@@ -75,6 +75,6 @@ module.exports = {
       '@components': appPaths.appSrc + '/components',
       '@common': appPaths.appSrc + '/common',
     },
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.scss'],
   },
 };

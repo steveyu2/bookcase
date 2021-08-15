@@ -1,10 +1,22 @@
 const path = require('path');
 const loaderUtils = require('loader-utils');
 const postcssNormalize = require('postcss-normalize');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const DEVELOPMENT = require('../env').NODE_ENV === 'development';
 
 const getStyleLoaders = (options, more) => {
+  const loaders = [];
+
+  if (!DEVELOPMENT) {
+    loaders.push(MiniCssExtractPlugin.loader);
+  } else {
+    loaders.push('style-loader');
+  }
+
   return [
-    'style-loader',
+    ...loaders,
+
     {
       loader: 'css-loader',
       options: options,
@@ -44,14 +56,8 @@ module.exports = function () {
       test: /\.(png|jpe?g|gif|svg)$/i,
       type: 'asset/resource',
     },
-    // {
-    //   test: /\.(scss|css)$/,
-    //   include: [path.resolve(__dirname, 'not_exist_path')],
-    //   use: getStyleLoaders({}),
-    // },
     {
       test: /\.(scss|css)$/,
-      // test: /\.module\.(scss|sass)$/,
       use: getStyleLoaders(
         {
           modules: {
@@ -66,7 +72,7 @@ module.exports = function () {
               return [localName, className.replace(/\-|\_/g, '')].join('_');
             },
           },
-          sourceMap: true,
+          sourceMap: DEVELOPMENT,
         },
         [
           {

@@ -80,7 +80,7 @@ module.exports = {
       '@common': appPaths.appSrc + '/common',
       '@style': appPaths.appSrc + '/style',
     },
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.scss'],
   },
   stats: { children: true },
 };

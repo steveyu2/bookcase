@@ -1,10 +1,14 @@
+@import './var.scss';
+
 html {
   font-size: 10px;
   background: beige; // bisque
 }
-#root,
-html,
-body {
-  min-height: 100%;
-  min-height: 100vh;
+:global {
+  #root,
+  html,
+  body {
+    min-height: 100%;
+    min-height: 100vh;
+  }
 }

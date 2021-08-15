@@ -25,7 +25,7 @@ process.env.PUBLIC_URL = paths.appPublic;
 
 const ENV = {
   REACT_APP_TITLE: 'book case',
-  NODE_ENV: process.env.NODE_ENV || 'development',
+  NODE_ENV,
   PUBLIC_URL: paths.appPublic,
   ...Object.keys(process.env)
     .filter((key) => REACT_APP.test(key))
@@ -36,6 +36,7 @@ const ENV = {
 };
 
 module.exports = {
+  NODE_ENV,
   origin: ENV,
   format: {
     'process.env': Object.keys(ENV).reduce((env, key) => {

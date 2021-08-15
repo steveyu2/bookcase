@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Link from '@components/Link';
 import { ENV } from '@common';
 
-import styles from './style.module.scss';
+import styles from './style.module';
 
 const App = () => {
   console.log('ENV', ENV, styles);
