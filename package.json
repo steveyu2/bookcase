@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "webpack serve --config webpack/config/dev.js",
-    "build": "rm -rf build && cross-env NODE_ENV=production webpack --config webpack/config/prod.js"
+    "build": "rm -rf build && cross-env NODE_ENV=production webpack --config webpack/config/prod.js",
+    "publish": "git plo main&&git pho main&&git ck publish-main&&git plo main&&git pho publish-main&&git ck main"
   },
   "dependencies": {
     "react": "^17.0.2",
