@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ publish-main ]
+    branches: [publish-main]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -28,6 +28,7 @@ jobs:
         uses: easingthemes/ssh-deploy@v2.2.11
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          ARGS: '-rltgoDzvO --delete'
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USER_NAME }}
           TARGET: /home/bookcase
@@ -38,4 +39,3 @@ jobs:
           SLACK_COLOR: '#fd374b'
           SLACK_MESSAGE: '发布成功！http://120.77.171.214:3131'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        
